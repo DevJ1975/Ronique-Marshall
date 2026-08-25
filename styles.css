@@ -572,6 +572,41 @@ nav {
   gap: 28px;
   align-items: center;
 }
+.countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+}
+.countdown__unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.countdown__value {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.countdown__label {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--taupe-dim);
+}
+.countdown__sep {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(28px, 4vw, 44px);
+  color: rgba(192, 161, 101, 0.4);
+  transform: translateY(-8px);
+}
+.countdown__caption {
+  margin: -12px 0 0;
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  color: var(--taupe-dim);
+}
+.countdown__arrived { margin: 0; }
+[hidden] { display: none !important; }
+
 .notify-form {
   display: flex;
   width: 100%;
@@ -642,6 +677,9 @@ footer {
   .hero__title { font-size: clamp(58px, 17vw, 240px) !important; }
 
   .book__specs { flex-wrap: wrap !important; row-gap: 18px !important; }
+
+  .countdown { gap: 12px !important; }
+  .countdown__sep { font-size: 22px !important; }
 
   footer { flex-direction: column !important; text-align: center; padding-bottom: calc(34px + env(safe-area-inset-bottom)) !important; }
 

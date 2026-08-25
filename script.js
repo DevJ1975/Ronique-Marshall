@@ -131,4 +131,42 @@
       setTimeout(function () { submitBtn.textContent = 'NOTIFY ME'; }, 4000);
     });
   })();
+
+  // ---- countdown to release ----
+  (function () {
+    var el = document.getElementById('countdown');
+    var arrivedEl = document.getElementById('countdown-arrived');
+    if (!el) return;
+
+    var target = new Date(el.dataset.target).getTime();
+    var daysEl = document.getElementById('cd-days');
+    var hoursEl = document.getElementById('cd-hours');
+    var minutesEl = document.getElementById('cd-minutes');
+    var secondsEl = document.getElementById('cd-seconds');
+    var timer = null;
+
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+    function tick() {
+      var diff = target - Date.now();
+      if (diff <= 0) {
+        if (timer) clearInterval(timer);
+        el.hidden = true;
+        if (arrivedEl) arrivedEl.hidden = false;
+        return;
+      }
+      var totalSeconds = Math.floor(diff / 1000);
+      var days = Math.floor(totalSeconds / 86400);
+      var hours = Math.floor((totalSeconds % 86400) / 3600);
+      var minutes = Math.floor((totalSeconds % 3600) / 60);
+      var seconds = totalSeconds % 60;
+      daysEl.textContent = pad(days);
+      hoursEl.textContent = pad(hours);
+      minutesEl.textContent = pad(minutes);
+      secondsEl.textContent = pad(seconds);
+    }
+
+    tick();
+    timer = setInterval(tick, 1000);
+  })();
 })();
