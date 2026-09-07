@@ -31,7 +31,7 @@
   --cream: #F7F4EE;
   --gold: #C0A165;
   --gold-light: #DCC489;
-  --gold-dark: #B08F45;
+  --gold-dark: #856A2C;   /* was #B08F45 — 2.74:1 on --paper-alt, failed AA */
   --taupe: #CFC5B4;
   --taupe-dim: #8C857B;
   --taupe-dim-alt: #A79A87;
@@ -82,12 +82,20 @@ img { max-width: 100%; }
   color: var(--ink);
 }
 
-:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* A single gold ring measures 2.20:1 on the light sections. Dual ring: the
+   dark outline carries light backgrounds, the pale halo carries dark ones.
+   [tabindex="-1"] is excluded so programmatic focus targets (the skip-link
+   destination) do not draw a box around a whole section. */
+:focus-visible:not([tabindex="-1"]) {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px #F2E0AE;
+}
 
 @keyframes hia-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes hia-sheen { 0%, 100% { background-position: -200% 50%; } 50% { background-position: 300% 50%; } }
 @keyframes hia-float { 0%, 100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-18px) rotate(-1.2deg); } }
-@keyframes hia-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes hia-pulse { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
 
 /* ---- nav ---- */
 nav {
@@ -686,4 +694,68 @@ footer {
   .notify-form { flex-direction: column !important; border: none !important; gap: 12px !important; }
   .notify-form input { border: 1px solid var(--gold) !important; width: 100% !important; }
   .notify-form button { width: 100% !important; padding: 16px 0 !important; }
+}
+
+
+/* ==================================================================
+   Added: Amazon CTA, the WebGL layer, and reduced-motion handling
+   ================================================================== */
+
+.btn--amazon {
+  font-family: 'Amazon Ember', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #0F1111;
+  background: #FFD814;
+  border: 1px solid #FCD200;
+  border-radius: 100px;
+  padding: 15px 34px;
+  box-shadow: 0 2px 5px rgba(15, 17, 17, 0.15);
+}
+.btn--amazon:hover, .btn--amazon:focus-visible { background: #F7CA00; }
+
+.hero__ctas { flex-wrap: wrap; align-items: center; }
+.book__ctas { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+/* ---- WebGL hosts. Both sit inside an existing positioned box; the canvas
+   itself is appended at runtime by assets/js/hia-3d.js. ---- */
+[data-hia-host] { position: absolute; inset: 0; pointer-events: none; }
+[data-hia-host="hero"] { z-index: 0; }
+[data-hia-host="book"] { z-index: 1; }
+
+/* Hand the cover over to WebGL only once a real frame has landed, so any
+   failure in the 3D path leaves the flat artwork untouched. The gold plate
+   (box-shadow on .book__cover) deliberately stays in CSS either way. */
+.book__cover-img,
+.book__cover-title,
+.book__cover-author { transition: opacity 0.7s ease; }
+.book__cover[data-hia-on] .book__cover-img,
+.book__cover[data-hia-on] .book__cover-title,
+.book__cover[data-hia-on] .book__cover-author { opacity: 0; }
+.book__cover[data-hia-on] { cursor: grab; }
+
+@media (max-width: 760px) {
+  [data-hia-host="hero"] { display: none; }
+  .btn--amazon { padding: 14px 26px; font-size: 15px; }
+}
+
+/* ---- nav scroll-spy ---- */
+.nav-links a.is-current { color: var(--gold); }
+
+/* ---- lightbox loading state ---- */
+#gallery-lightbox-img { transition: opacity 0.3s ease; }
+#gallery-lightbox-img.is-loading { opacity: 0.2; }
+
+/* ---- reduced motion: stop every continuous animation, the parallax, and
+   the smooth scrolling. The 3D layer never loads at all. ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
